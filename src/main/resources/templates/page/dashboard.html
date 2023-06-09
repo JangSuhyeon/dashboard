@@ -120,7 +120,15 @@
                   <td th:text="${project.startDt}"></td>
                   <td th:text="${project.endDt}"></td>
                   <td>
-                    <span class="text-success font-12" th:text="${project.status}">Completed</span>
+                    <span class="font-12">
+                      <span th:switch="${project.status}">
+                        <span th:case="'0'" th:class="text-secondary" th:text="${project.statusNm}">text-secondary</span>
+                        <span th:case="'1'" th:class="text-primary" th:text="${project.statusNm}">text-primary</span>
+                        <span th:case="'2'" th:class="text-info" th:text="${project.statusNm}">text-info</span>
+                        <span th:case="'3'" th:class="text-success" th:text="${project.statusNm}">text-success</span>
+                        <span th:case="'4'" th:class="text-warning" th:text="${project.statusNm}">text-warning</span>
+                      </span>
+                    </span>
                   </td>
                   <td>
                     <div class="team">

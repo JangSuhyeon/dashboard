@@ -11,8 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.text.ParseException;
-
 @AllArgsConstructor
 @Controller
 @RequestMapping("")
@@ -21,7 +19,7 @@ public class MainController {
     private final ProjectService projectService;
 
     @GetMapping("")
-    public String goToDashboard(@PageableDefault(page = 0, size = 10) Pageable pageable, Model model) throws ParseException {
+    public String goToDashboard(@PageableDefault(page = 0, size = 10) Pageable pageable, Model model) {
 
         // 프로젝트 목록 조회
         Page<ProjectResponseDTO> pjtResDTOList = projectService.findAll(pageable);

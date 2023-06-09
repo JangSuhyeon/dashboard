@@ -1,5 +1,7 @@
 package com.dashboard.project.service;
 
+import com.dashboard.common.domain.Code;
+import com.dashboard.common.repository.CodeRepository;
 import com.dashboard.member.domain.Member;
 import com.dashboard.member.domain.dto.MemberResponseDTO;
 import com.dashboard.member.repository.MemberRepository;
@@ -7,12 +9,12 @@ import com.dashboard.project.domain.Project;
 import com.dashboard.project.domain.dto.ProjectResponseDTO;
 import com.dashboard.project.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
+import org.hibernate.query.JpaTuple;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +27,17 @@ public class ProjectService {
 
     private final MemberRepository memberRepository;
 
-    public Page<ProjectResponseDTO> findAll(Pageable pageable) throws ParseException {
+    private final CodeRepository codeRepository;
+
+    public Page<ProjectResponseDTO> findAll(Pageable pageable) {
         List<ProjectResponseDTO> pjtResDtoList = new ArrayList<>();
 
         // 프로젝트 목록 조회
-        Page<Project> pjtList = projectRepository.findAll(pageable);
+        Page<JpaTuple> pjtTuplePage = projectRepository.findAllAsTuple(pageable);
 
-        for (Project project : pjtList) {
+        for (JpaTuple tuple : pjtTuplePage) {
+            Project project = tuple.get(0,Project.class);
+            Code code = tuple.get(1,Code.class);
 
             String pjtId = project.getPjtId();
 
@@ -61,11 +67,12 @@ public class ProjectService {
                     .modDt(project.getModDt())
                     .useYn(project.getUseYn())
                     .memberList(memResDtoList)
+                    .statusNm(codeRepository.findCodeNameByGroupCodeAndCode("STATUS",project.getStatus()).getCodeName())
                     .build();
 
             pjtResDtoList.add(pjtResDto);
         }
 
-        return new PageImpl<>(pjtResDtoList, pageable, pjtList.getTotalElements());
+        return new PageImpl<>(pjtResDtoList, pageable, pjtTuplePage.getTotalElements());
     }
 }

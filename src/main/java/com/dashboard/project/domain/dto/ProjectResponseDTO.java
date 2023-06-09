@@ -27,7 +27,7 @@ public class ProjectResponseDTO {
     // Member
     private List<MemberResponseDTO> memberList;
 
-    // Page
-    private int totalPage;
+    // Code
+    private String statusNm;
 
 }
