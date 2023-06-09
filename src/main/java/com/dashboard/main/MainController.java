@@ -3,12 +3,15 @@ package com.dashboard.main;
 import com.dashboard.project.domain.dto.ProjectResponseDTO;
 import com.dashboard.project.service.ProjectService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.ParseException;
 
 @AllArgsConstructor
 @Controller
@@ -18,12 +21,14 @@ public class MainController {
     private final ProjectService projectService;
 
     @GetMapping("")
-    public String goToDashboard(){
-        List<ProjectResponseDTO> pjtResDTOList = new ArrayList<>();
+    public String goToDashboard(@PageableDefault(page = 0, size = 10) Pageable pageable, Model model) throws ParseException {
 
         // 프로젝트 목록 조회
-        pjtResDTOList = projectService.findAll();
-        System.out.println(pjtResDTOList);
+        Page<ProjectResponseDTO> pjtResDTOList = projectService.findAll(pageable);
+
+        model.addAttribute("projectList", pjtResDTOList);
+        model.addAttribute("totalPages", pjtResDTOList.getTotalPages());
+        model.addAttribute("currentPage", pjtResDTOList.getNumber() + 1);
 
         return "page/dashboard";
     }

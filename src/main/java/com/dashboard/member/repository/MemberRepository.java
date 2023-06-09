@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, String> {
 
-    @Query("select m from Member m left ProjectMember pm on m.memId = pm.memId where pm.pjtId = :PjtId")
+    @Query("select m from Member m left join ProjectMember pm on m.memId = pm.memId where pm.pjtId = :pjtId")
     List<Member> findAllByPjtId(@Param("pjtId") String pjtId);
 }

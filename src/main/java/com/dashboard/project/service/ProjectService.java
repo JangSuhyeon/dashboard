@@ -7,9 +7,13 @@ import com.dashboard.project.domain.Project;
 import com.dashboard.project.domain.dto.ProjectResponseDTO;
 import com.dashboard.project.repository.ProjectRepository;
 import lombok.AllArgsConstructor;
-import org.hibernate.query.JpaTuple;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +25,11 @@ public class ProjectService {
 
     private final MemberRepository memberRepository;
 
-    public List<ProjectResponseDTO> findAll() {
+    public Page<ProjectResponseDTO> findAll(Pageable pageable) throws ParseException {
         List<ProjectResponseDTO> pjtResDtoList = new ArrayList<>();
 
         // 프로젝트 목록 조회
-        List<Project> pjtList = projectRepository.findAll();
+        Page<Project> pjtList = projectRepository.findAll(pageable);
 
         for (Project project : pjtList) {
 
@@ -45,11 +49,12 @@ public class ProjectService {
             }
 
             // Entity -> DTO
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             ProjectResponseDTO pjtResDto = ProjectResponseDTO.builder()
                     .pjtId(project.getPjtId())
                     .pjtNm(project.getPjtNm())
-                    .startDt(project.getStartDt())
-                    .endDt(project.getEndDt())
+                    .startDt(dateFormat.format(project.getStartDt()))
+                    .endDt(dateFormat.format(project.getEndDt()))
                     .status(project.getStatus())
                     .progress(project.getProgress())
                     .regDt(project.getRegDt())
@@ -57,8 +62,10 @@ public class ProjectService {
                     .useYn(project.getUseYn())
                     .memberList(memResDtoList)
                     .build();
+
+            pjtResDtoList.add(pjtResDto);
         }
 
-        return pjtResDtoList;
+        return new PageImpl<>(pjtResDtoList, pageable, pjtList.getTotalElements());
     }
 }
