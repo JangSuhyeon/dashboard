@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CodeRepository extends JpaRepository<Code, String> {
-    Code findCodeNameByGroupCodeAndCode(String status, String status1);
+
+    Code findByGroupCodeAndCode(String groupCode, String code);
 }

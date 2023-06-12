@@ -8,8 +8,8 @@ import com.dashboard.member.repository.MemberRepository;
 import com.dashboard.project.domain.Project;
 import com.dashboard.project.domain.dto.ProjectResponseDTO;
 import com.dashboard.project.repository.ProjectRepository;
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
-import org.hibernate.query.JpaTuple;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,15 +29,18 @@ public class ProjectService {
 
     private final CodeRepository codeRepository;
 
+    private final EntityManager entityManager;
+
     public Page<ProjectResponseDTO> findAll(Pageable pageable) {
         List<ProjectResponseDTO> pjtResDtoList = new ArrayList<>();
 
         // 프로젝트 목록 조회
-        Page<JpaTuple> pjtTuplePage = projectRepository.findAllAsTuple(pageable);
+        Page<Project> pjtList = projectRepository.findAll(pageable);
 
-        for (JpaTuple tuple : pjtTuplePage) {
-            Project project = tuple.get(0,Project.class);
-            Code code = tuple.get(1,Code.class);
+        for (Project project : pjtList) {
+
+            // 영속성 컨텍스트 초기화
+            entityManager.clear();
 
             String pjtId = project.getPjtId();
 
@@ -54,6 +57,10 @@ public class ProjectService {
                 memResDtoList.add(memResDto);
             }
 
+            // 코드 상태값 조회
+            String statusCd = project.getStatus();
+            Code code = codeRepository.findByGroupCodeAndCode("STATUS", statusCd);
+
             // Entity -> DTO
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             ProjectResponseDTO pjtResDto = ProjectResponseDTO.builder()
@@ -67,12 +74,12 @@ public class ProjectService {
                     .modDt(project.getModDt())
                     .useYn(project.getUseYn())
                     .memberList(memResDtoList)
-                    .statusNm(codeRepository.findCodeNameByGroupCodeAndCode("STATUS",project.getStatus()).getCodeName())
+                    .statusNm(code.getCodeName())
                     .build();
 
             pjtResDtoList.add(pjtResDto);
         }
 
-        return new PageImpl<>(pjtResDtoList, pageable, pjtTuplePage.getTotalElements());
+        return new PageImpl<>(pjtResDtoList, pageable, pjtList.getTotalElements());
     }
 }

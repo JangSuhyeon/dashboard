@@ -1,8 +1,9 @@
 package com.dashboard.member.domain.dto;
 
-import jakarta.persistence.Column;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class MemberResponseDTO {
 

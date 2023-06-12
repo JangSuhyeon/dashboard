@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, String> {
 
-    @Query("SELECT p,c FROM Project p LEFT JOIN Code c ON c.groupCode = 'STATUS' AND p.status = c.code")
-    Page<JpaTuple> findAllAsTuple(Pageable pageable);
+    Page<Project> findAll(Pageable pageable);
 
 }
