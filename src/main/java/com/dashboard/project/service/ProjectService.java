@@ -29,8 +29,6 @@ public class ProjectService {
 
     private final CodeRepository codeRepository;
 
-    private final EntityManager entityManager;
-
     public Page<ProjectResponseDTO> findAll(Pageable pageable) {
         List<ProjectResponseDTO> pjtResDtoList = new ArrayList<>();
 
@@ -39,10 +37,8 @@ public class ProjectService {
 
         for (Project project : pjtList) {
 
-            // 영속성 컨텍스트 초기화
-            entityManager.clear();
-
             String pjtId = project.getPjtId();
+            String statusCd = project.getStatus();
 
             // 프로젝트 멤버 조회
             List<MemberResponseDTO> memResDtoList = new ArrayList<>();
@@ -58,8 +54,7 @@ public class ProjectService {
             }
 
             // 코드 상태값 조회
-            String statusCd = project.getStatus();
-            Code code = codeRepository.findByGroupCodeAndCode("STATUS", statusCd);
+            Code code = codeRepository.findCodeNameByGroupCodeAndCode("STATUS", statusCd);
 
             // Entity -> DTO
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

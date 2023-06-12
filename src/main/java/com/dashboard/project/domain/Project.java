@@ -30,6 +30,9 @@ public class Project {
     private int progress;
 
     @Column
+    private String content;
+
+    @Column
     private Date regDt;
 
     @Column

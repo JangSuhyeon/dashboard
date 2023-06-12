@@ -20,6 +20,7 @@ public class ProjectResponseDTO {
     private String endDt;
     private String status;
     private int progress;
+    private String content;
     private Date regDt;
     private Date modDt;
     private String useYn;

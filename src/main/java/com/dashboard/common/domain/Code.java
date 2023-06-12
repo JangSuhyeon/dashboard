@@ -12,6 +12,9 @@ import lombok.ToString;
 public class Code {
 
     @Id
+    private String cdId;
+
+    @Column
     private String groupCode;
 
     @Column

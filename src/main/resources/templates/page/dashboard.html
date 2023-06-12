@@ -102,6 +102,7 @@
         <div class="card">
           <div class="card-body">
             <div class="table-responsive project-list">
+              <a class="btn btn-primary mb-2 float-right text-white" href="/project/create">새로운 프로젝트 생성</a>
               <table class="table project-table table-centered table-nowrap">
                 <thead>
                 <tr>
@@ -133,14 +134,14 @@
                   <td>
                     <div class="team">
                       <a
-                          th:each="member : ${project.memberList}"
-                          href="javascript: void(0);"
-                          class="team-member"
-                          data-toggle="tooltip"
-                          data-placement="top"
-                          title
-                          data-original-title="Roger Drake"
-                          th:text="${member.memNm}"
+                        th:each="member : ${project.memberList}"
+                        href="javascript: void(0);"
+                        class="team-member"
+                        data-toggle="tooltip"
+                        data-placement="top"
+                        title
+                        data-original-title="Roger Drake"
+                        th:text="${member.memNm}"
                       >
                       </a>
                     </div>

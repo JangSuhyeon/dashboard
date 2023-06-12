@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default_layout}">
+
+<th:block layout:fragment="css">
+
+    <style type="text/css">
+        body{
+            background: #f3f3f3;
+            margin-top: 20px;
+            color: #616f80;
+        }
+        .card {
+            border: none;
+            margin-bottom: 24px;
+            -webkit-box-shadow: 0 0 13px 0 rgba(236, 236, 241, 0.44);
+            box-shadow: 0 0 13px 0 rgba(236, 236, 241, 0.44);
+        }
+        .card-header:first-child {
+            border-radius: calc(.2rem - 1px) calc(.2rem - 1px) 0 0;
+        }
+        .card-header {
+            border-bottom-width: 1px;
+        }
+        .card-header {
+            padding: .75rem 1.25rem;
+            margin-bottom: 0;
+            color: inherit;
+            background-color: #fff;
+            border-bottom: 1px solid #e5e9f2;
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-actions float-right">
+                            <div class="dropdown show">
+                                <a href="#" data-toggle="dropdown" data-display="static">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal align-middle">
+                                        <circle cx="12" cy="12" r="1"></circle>
+                                        <circle cx="19" cy="12" r="1"></circle>
+                                        <circle cx="5" cy="12" r="1"></circle>
+                                    </svg>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" href="#">Action</a>
+                                    <a class="dropdown-item" href="#">Another action</a>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                </div>
+                            </div>
+                        </div>
+                        <h5 class="card-title mb-0">새로운 프로젝트 생성</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="createProjectFrm" onsubmit="return false;">
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="pjtNm">프로젝트 이름</label>
+                                    <input type="text" class="form-control" id="pjtNm" name="pjtNm" placeholder="프로젝트 이름을 입력해주세요.">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="startDt">시작 일자</label>
+                                    <input type="date" class="form-control" id="startDt" name="pjtStartDt">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="endtDt">완료 일자</label>
+                                    <input type="date" class="form-control" id="endtDt" name="pjtEndtDt">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="status">상태</label>
+                                    <select id="status" name="status" class="form-control">
+                                        <option value="">상태를 선택해주세요.</option>
+                                        <option th:each="status : ${statusList}" th:value="${status.code}" th:text="${status.codeName}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="progress">진행도(%)</label>
+                                    <input type="number" value="0" step="5" min="0" max="100" class="form-control" id="progress" name="progress" placeholder="진행도(%)를 입력해주세요.">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <label for="content">프로젝트 개요</label>
+                                    <textarea rows="2" class="form-control" id="content" name="content" placeholder="프로젝트 개요를 입력해주세요." style="height: 200px;resize: none" ></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">생성</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        $(document).ready(function() {
+            $('#progress').on('keydown', function(e) {
+                var keyCode = e.keyCode || e.which;
+
+                // 입력된 키가 0-9 사이의 숫자가 아니거나 Backspace 또는 Delete 키인 경우
+                if ((keyCode < 48 || keyCode > 57) && keyCode !== 8 && keyCode !== 46) {
+                    e.preventDefault(); // 입력을 막음
+                }
+
+                // 입력된 숫자가 0부터 100 사이의 범위를 벗어난 경우
+                var inputValue = parseInt($(this).val() + String.fromCharCode(keyCode));
+                if (inputValue < 0 || inputValue > 100) {
+                    e.preventDefault(); // 입력을 막음
+                }
+            });
+
+            $('#createProjectFrm').submit(function(event) {
+                event.preventDefault(); // 폼 기본 동작 막기
+
+                alert("click");
+            });
+        });
+    </script>
+</th:block>
+
+</html>
