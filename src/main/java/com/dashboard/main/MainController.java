@@ -5,6 +5,7 @@ import com.dashboard.project.service.ProjectService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +20,7 @@ public class MainController {
     private final ProjectService projectService;
 
     @GetMapping("")
-    public String goToDashboard(@PageableDefault(page = 0, size = 10) Pageable pageable, Model model) {
+    public String goToDashboard(@PageableDefault(page = 0, size = 10, sort = "regDt", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
         // 프로젝트 목록 조회
         Page<ProjectResponseDTO> pjtResDTOList = projectService.findAll(pageable);

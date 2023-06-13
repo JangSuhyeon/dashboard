@@ -3,20 +3,25 @@ package com.dashboard.project.service;
 import com.dashboard.common.domain.Code;
 import com.dashboard.common.repository.CodeRepository;
 import com.dashboard.member.domain.Member;
+import com.dashboard.member.domain.ProjectMember;
 import com.dashboard.member.domain.dto.MemberResponseDTO;
 import com.dashboard.member.repository.MemberRepository;
+import com.dashboard.member.repository.ProjectMemberRepository;
 import com.dashboard.project.domain.Project;
+import com.dashboard.project.domain.dto.ProjectRequestDTO;
 import com.dashboard.project.domain.dto.ProjectResponseDTO;
 import com.dashboard.project.repository.ProjectRepository;
-import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -28,6 +33,8 @@ public class ProjectService {
     private final MemberRepository memberRepository;
 
     private final CodeRepository codeRepository;
+
+    private final ProjectMemberRepository projectMemberRepository;
 
     public Page<ProjectResponseDTO> findAll(Pageable pageable) {
         List<ProjectResponseDTO> pjtResDtoList = new ArrayList<>();
@@ -76,5 +83,37 @@ public class ProjectService {
         }
 
         return new PageImpl<>(pjtResDtoList, pageable, pjtList.getTotalElements());
+    }
+
+    public void save(ProjectRequestDTO pjtReqDto) {
+
+        // pjtId 시퀀스 생성
+        String pjtId = projectRepository.callGenerateProjectIdFunction();
+
+        Project project = Project.builder()
+                .pjtId(pjtId)
+                .pjtNm(pjtReqDto.getPjtNm())
+                .startDt(pjtReqDto.getStartDt())
+                .endDt(pjtReqDto.getEndDt())
+                .status(pjtReqDto.getStatus())
+                .progress(pjtReqDto.getProgress())
+                .content(pjtReqDto.getContent())
+                .regDt(new Date())
+                .useYn("Y")
+                .build();
+
+        // 신규 프로젝트 생성
+        projectRepository.save(project);
+
+        List<String> memIdList = pjtReqDto.getMemIdList();
+        for (String memId : memIdList) {
+            ProjectMember projectMember = ProjectMember.builder()
+                    .pjtId(pjtId)
+                    .memId(memId)
+                    .build();
+
+            // Project <-> Member 생성
+            projectMemberRepository.save(projectMember);
+        }
     }
 }

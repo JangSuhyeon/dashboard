@@ -1,14 +1,16 @@
 package com.dashboard.member.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Generated;
 
+@Builder
 @Entity
 public class ProjectMember {
 
     @Id
-    private String pjtMemId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long pjtMemId;
 
     @Column
     private String pjtId;

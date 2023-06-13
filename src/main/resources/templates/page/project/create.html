@@ -68,12 +68,31 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
+                                    <label for="leader">프로젝트 리더</label>
+                                    <select id="leader" name="leader" class="form-control">
+                                        <option value="">프로젝터 리더를 선택해주세요.</option>
+                                        <option th:each="member : ${memberList}" th:value="${member.memId}" th:text="${member.memNm}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="member">멤버</label>
+                                    <select id="member" name="member" class="form-control">
+                                        <option value="">멤버를 선택해주세요.</option>
+                                        <option th:each="member : ${memberList}" th:value="${member.memId}" th:text="${member.memNm}"></option>
+                                    </select>
+                                    <div id="memberList" style="padding:.375rem .75rem;">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
                                     <label for="startDt">시작 일자</label>
-                                    <input type="date" class="form-control" id="startDt" name="pjtStartDt">
+                                    <input type="date" class="form-control" id="startDt" name="startDt">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="endtDt">완료 일자</label>
-                                    <input type="date" class="form-control" id="endtDt" name="pjtEndtDt">
+                                    <input type="date" class="form-control" id="endtDt" name="endtDt">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -108,25 +127,42 @@
 <th:block layout:fragment="script">
     <script>
         $(document).ready(function() {
-            $('#progress').on('keydown', function(e) {
-                var keyCode = e.keyCode || e.which;
-
-                // 입력된 키가 0-9 사이의 숫자가 아니거나 Backspace 또는 Delete 키인 경우
-                if ((keyCode < 48 || keyCode > 57) && keyCode !== 8 && keyCode !== 46) {
-                    e.preventDefault(); // 입력을 막음
-                }
-
-                // 입력된 숫자가 0부터 100 사이의 범위를 벗어난 경우
-                var inputValue = parseInt($(this).val() + String.fromCharCode(keyCode));
-                if (inputValue < 0 || inputValue > 100) {
-                    e.preventDefault(); // 입력을 막음
-                }
-            });
 
             $('#createProjectFrm').submit(function(event) {
-                event.preventDefault(); // 폼 기본 동작 막기
+                event.preventDefault();
 
-                alert("click");
+                var memberList = $('#memberList div').map(function() {
+                    return $(this).find('input').val();
+                }).get();
+
+                var param = {
+                    pjtNm: $('#pjtNm').val(),
+                    startDt: $('#startDt').val(),
+                    endDt: $('#endtDt').val(),
+                    status: $('#status').val(),
+                    progress: $('#progress').val(),
+                    content: $('#content').val(),
+                    memIdList: memberList
+                }
+                
+                $.ajax({
+                    type:"POST",
+                    url:"/project/create",
+                    contentType:"application/json",
+                    data:JSON.stringify(param),
+                    success:function (res) {
+                        console.log(res);
+                    }
+                });
+            });
+            
+            $('#member').change(function (event) {
+                var selectedValue = event.target.value;
+                var selectedText = event.target.options[event.target.selectedIndex].text;
+
+                var html = "<div style='padding:8px; border-bottom: 1px solid #D5D5D5;'>" + selectedText;
+                html += "<input type='hidden' value='"+ selectedValue +"'/></div>";
+                $('#memberList').append(html);
             });
         });
     </script>
