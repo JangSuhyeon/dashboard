@@ -2,7 +2,7 @@ package com.dashboard.project.controller;
 
 import com.dashboard.common.domain.dto.CodeResponseDTO;
 import com.dashboard.common.service.CodeService;
-import com.dashboard.member.MemberService;
+import com.dashboard.member.service.MemberService;
 import com.dashboard.member.domain.dto.MemberResponseDTO;
 import com.dashboard.project.domain.dto.ProjectRequestDTO;
 import com.dashboard.project.service.ProjectService;

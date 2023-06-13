@@ -28,6 +28,7 @@ public class MainController {
         model.addAttribute("projectList", pjtResDTOList);
         model.addAttribute("totalPages", pjtResDTOList.getTotalPages());
         model.addAttribute("currentPage", pjtResDTOList.getNumber() + 1);
+        model.addAttribute("firstConIdx", pjtResDTOList.getNumber() * pjtResDTOList.getSize() + 1);
 
         return "page/dashboard";
     }

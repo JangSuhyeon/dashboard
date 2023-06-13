@@ -1,4 +1,4 @@
-package com.dashboard.member;
+package com.dashboard.member.service;
 
 import com.dashboard.member.domain.Member;
 import com.dashboard.member.domain.dto.MemberResponseDTO;

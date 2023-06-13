@@ -63,7 +63,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                     <label for="pjtNm">프로젝트 이름</label>
-                                    <input type="text" class="form-control" id="pjtNm" name="pjtNm" placeholder="프로젝트 이름을 입력해주세요.">
+                                    <input type="text" class="form-control" id="pjtNm" name="pjtNm" placeholder="프로젝트 이름을 입력해주세요." required>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -88,17 +88,17 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="startDt">시작 일자</label>
-                                    <input type="date" class="form-control" id="startDt" name="startDt">
+                                    <input type="date" class="form-control" id="startDt" name="startDt" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="endtDt">완료 일자</label>
-                                    <input type="date" class="form-control" id="endtDt" name="endtDt">
+                                    <input type="date" class="form-control" id="endtDt" name="endtDt" required>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="status">상태</label>
-                                    <select id="status" name="status" class="form-control">
+                                    <select id="status" name="status" class="form-control" required>
                                         <option value="">상태를 선택해주세요.</option>
                                         <option th:each="status : ${statusList}" th:value="${status.code}" th:text="${status.codeName}"></option>
                                     </select>
@@ -110,12 +110,16 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <label for="content">프로젝트 개요</label>
-                                    <textarea rows="2" class="form-control" id="content" name="content" placeholder="프로젝트 개요를 입력해주세요." style="height: 200px;resize: none" ></textarea>
+                                    <label>프로젝트 개요</label>
+                                    <div class="editor-container" th:id="content" style="height:200px;"></div>
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">생성</button>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary">생성</button>
+                                <button type="button" class="btn btn-secondary" onclick="window.location.href = '/'">뒤로가기</button>
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -125,6 +129,7 @@
 </div>
 
 <th:block layout:fragment="script">
+    <script src="/js/quill.js"></script>
     <script>
         $(document).ready(function() {
 
@@ -141,7 +146,7 @@
                     endDt: $('#endtDt').val(),
                     status: $('#status').val(),
                     progress: $('#progress').val(),
-                    content: $('#content').val(),
+                    content: quill.root.innerHTML,
                     memIdList: memberList
                 }
                 
@@ -151,7 +156,13 @@
                     contentType:"application/json",
                     data:JSON.stringify(param),
                     success:function (res) {
-                        console.log(res);
+                        if(res === "생성성공"){
+                            alert("신규 프로젝트가 생성되었습니다.");
+                            window.location.href = "/";
+                        }else{
+                            alert("실패했습니다.");
+                            return false;
+                        }
                     }
                 });
             });

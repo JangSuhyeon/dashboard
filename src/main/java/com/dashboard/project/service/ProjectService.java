@@ -15,8 +15,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -88,7 +86,7 @@ public class ProjectService {
     public void save(ProjectRequestDTO pjtReqDto) {
 
         // pjtId 시퀀스 생성
-        String pjtId = projectRepository.callGenerateProjectIdFunction();
+        String pjtId = codeRepository.callGenerateProjectIdFunction("PJT");
 
         Project project = Project.builder()
                 .pjtId(pjtId)
@@ -107,9 +105,15 @@ public class ProjectService {
 
         List<String> memIdList = pjtReqDto.getMemIdList();
         for (String memId : memIdList) {
+
+            // pjtMemId 시퀀스 생성
+            String pjtMemId = codeRepository.callGenerateProjectIdFunction("PJM");
+
             ProjectMember projectMember = ProjectMember.builder()
+                    .pjtMemId(pjtMemId)
                     .pjtId(pjtId)
                     .memId(memId)
+                    .leaderYn("N")
                     .build();
 
             // Project <-> Member 생성

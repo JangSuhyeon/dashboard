@@ -106,6 +106,7 @@
               <table class="table project-table table-centered table-nowrap">
                 <thead>
                 <tr>
+                  <th scope="col" class="text-center">No.</th>
                   <th scope="col">Projects</th>
                   <th scope="col">Start Date</th>
                   <th scope="col">End Date</th>
@@ -116,7 +117,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="project : ${projectList}">
+                <tr th:each="project, pjtStat : ${projectList}">
+                  <td th:text="${pjtStat.index + firstConIdx}" class="text-center"></td>
                   <td th:text="${project.pjtNm}"></td>
                   <td th:text="${project.startDt}"></td>
                   <td th:text="${project.endDt}"></td>
@@ -141,8 +143,8 @@
                         data-placement="top"
                         title
                         data-original-title="Roger Drake"
-                        th:text="${member.memNm}"
                       >
+                        <img style="height: 2.3rem;width: 2.3rem;border-radius: 50%!important;" th:src="@{/profile/__${member.memImg}__}" th:title="${member.memNm}"/>
                       </a>
                     </div>
                   </td>
