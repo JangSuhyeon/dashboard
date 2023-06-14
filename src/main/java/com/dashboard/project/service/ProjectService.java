@@ -50,11 +50,7 @@ public class ProjectService {
             List<Member> memList = memberRepository.findAllByPjtId(pjtId);
             for (Member member : memList) {
                 // Entity -> DTO
-                MemberResponseDTO memResDto = MemberResponseDTO.builder()
-                        .memId(member.getMemId())
-                        .memNm(member.getMemNm())
-                        .memImg(member.getMemImg())
-                        .build();
+                MemberResponseDTO memResDto = member.toDto();
                 memResDtoList.add(memResDto);
             }
 
@@ -119,5 +115,44 @@ public class ProjectService {
             // Project <-> Member 생성
             projectMemberRepository.save(projectMember);
         }
+    }
+
+    public ProjectResponseDTO findById(String pjtId) {
+        ProjectResponseDTO pjtResDto = new ProjectResponseDTO();
+        List<MemberResponseDTO> memResDtoList = new ArrayList<>();
+
+        Project project = projectRepository.findById(pjtId).orElse(null);
+
+        if (project != null){
+            // 프로젝트 멤버 조회
+            List<Member> memList = memberRepository.findAllByPjtId(pjtId);
+            for (Member member : memList) {
+                // Entity -> DTO
+                MemberResponseDTO memResDto = member.toDto();
+                memResDtoList.add(memResDto);
+            }
+
+            // 코드 상태값 조회
+            Code code = codeRepository.findCodeNameByGroupCodeAndCode("STATUS", project.getStatus());
+
+            // Entity -> DTO
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            pjtResDto = ProjectResponseDTO.builder()
+                    .pjtId(project.getPjtId())
+                    .pjtNm(project.getPjtNm())
+                    .startDt(dateFormat.format(project.getStartDt()))
+                    .endDt(dateFormat.format(project.getEndDt()))
+                    .status(project.getStatus())
+                    .progress(project.getProgress())
+                    .content(project.getContent())
+                    .regDt(project.getRegDt())
+                    .modDt(project.getModDt())
+                    .useYn(project.getUseYn())
+                    .memberList(memResDtoList)
+                    .statusNm(code.getCodeName())
+                    .build();
+        }
+
+        return pjtResDto;
     }
 }

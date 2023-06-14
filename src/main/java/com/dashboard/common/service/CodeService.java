@@ -20,10 +20,7 @@ public class CodeService {
 
         List<Code> codeList = codeRepository.findAllByGroupCode(status);
         for (Code code : codeList) {
-            CodeResponseDTO cdResDto = CodeResponseDTO.builder()
-                    .code(code.getCode())
-                    .codeName(code.getCodeName())
-                    .build();
+            CodeResponseDTO cdResDto = code.toDto();
             cdResDtoList.add(cdResDto);
         }
         return cdResDtoList;

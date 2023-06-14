@@ -18,17 +18,26 @@
       -webkit-box-shadow: 0 0 13px 0 rgba(236, 236, 241, 0.44);
       box-shadow: 0 0 13px 0 rgba(236, 236, 241, 0.44);
     }
-
-    .avatar-xs {
-      height: 2.3rem;
-      width: 2.3rem;
-    }
   </style>
 
 </th:block>
 
 <th:block layout:fragment="script">
-  <!--    <script th:src="@{/js/page/home.js}"></script>-->
+  <script>
+    function openProjectDetail(pjtId) {
+      $('iframe').attr("src","/project/" + pjtId);
+      $('.modal').css({"display":"block"});
+    }
+    
+    $(function () {
+      $('.modal').click(function () {
+        $(this).css("display","none");
+      });
+      $('#modalCloseBtn').click(function () {
+        $('.modal').css("display","none");
+      })
+    });
+  </script>
 </th:block>
 
 <div layout:fragment="content">
@@ -117,12 +126,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="project, pjtStat : ${projectList}">
-                  <td th:text="${pjtStat.index + firstConIdx}" class="text-center"></td>
-                  <td th:text="${project.pjtNm}"></td>
-                  <td th:text="${project.startDt}"></td>
-                  <td th:text="${project.endDt}"></td>
-                  <td>
+                <tr th:each="project, pjtStat : ${projectList}"
+                    th:data-pjtId="${project.pjtId}"
+                    th:onclick="openProjectDetail(this.getAttribute('data-pjtId'))"
+                    style="cursor: pointer"
+                    onmouseover="this.style.backgroundColor='#f5f5f5';"
+                    onmouseout="this.style.backgroundColor='#fff';">
+                  <td th:text="${pjtStat.index + firstConIdx}" class="text-center align-middle"></td>
+                  <td th:text="${project.pjtNm}" class="align-middle"></td>
+                  <td th:text="${project.startDt}" class="align-middle"></td>
+                  <td th:text="${project.endDt}" class="align-middle"></td>
+                  <td class="align-middle">
                     <span class="font-12">
                       <span th:switch="${project.status}">
                         <span th:case="'0'" th:class="text-secondary" th:text="${project.statusNm}">text-secondary</span>
@@ -133,7 +147,7 @@
                       </span>
                     </span>
                   </td>
-                  <td>
+                  <td class="align-middle">
                     <div class="team">
                       <a
                         th:each="member : ${project.memberList}"
@@ -144,7 +158,7 @@
                         title
                         data-original-title="Roger Drake"
                       >
-                        <img style="height: 2.3rem;width: 2.3rem;border-radius: 50%!important;" th:src="@{/profile/__${member.memImg}__}" th:title="${member.memNm}"/>
+                        <img class="avatar-xs" th:src="@{/profile/__${member.memImg}__}" th:title="${member.memNm}"/>
                       </a>
                     </div>
                   </td>
@@ -178,7 +192,7 @@
                         th:attr="aria-valuenow=${project.progress}, aria-valuemin='0', aria-valuemax='100'"></div>
                     </div>
                   </td>
-                  <td>
+                  <td class="align-middle">
                     <div class="action">
                       <a
                         href="#"
@@ -220,6 +234,16 @@
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="projectDetailModal" class="modal modal-l">
+    <div class="modal-wrapper">
+      <iframe style="width:100%; height:100%;"></iframe>
+
+      <div class="text-right modal-btn">
+        <button id="modalCloseBtn" type="button" class="btn btn-primary">닫기</button>
       </div>
     </div>
   </div>

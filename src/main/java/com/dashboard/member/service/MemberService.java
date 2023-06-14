@@ -23,11 +23,7 @@ public class MemberService {
 
         for (Member member : memList) {
             // Entity - > DTO
-            MemberResponseDTO memResDto = MemberResponseDTO.builder()
-                    .memId(member.getMemId())
-                    .memNm(member.getMemNm())
-                    .memImg(member.getMemImg())
-                    .build();
+            MemberResponseDTO memResDto =member.toDto();
             memResDtoList.add(memResDto);
         }
 

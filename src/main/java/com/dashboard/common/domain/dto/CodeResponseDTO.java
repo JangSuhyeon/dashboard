@@ -1,9 +1,11 @@
 package com.dashboard.common.domain.dto;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Builder
+@NoArgsConstructor
+@Setter
 @Getter
 public class CodeResponseDTO {
 

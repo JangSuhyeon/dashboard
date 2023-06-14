@@ -1,17 +1,17 @@
 package com.dashboard.project.domain.dto;
 
 import com.dashboard.member.domain.dto.MemberResponseDTO;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@Getter
+@Setter
+@ToString
 public class ProjectResponseDTO {
 
     // Project
