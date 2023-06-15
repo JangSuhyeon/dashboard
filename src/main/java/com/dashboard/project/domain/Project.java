@@ -46,7 +46,4 @@ public class Project {
     @Column
     private Date modDt;
 
-    @Column
-    private String useYn;
-
 }

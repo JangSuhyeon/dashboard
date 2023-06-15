@@ -68,7 +68,6 @@ public class ProjectService {
                     .progress(project.getProgress())
                     .regDt(project.getRegDt())
                     .modDt(project.getModDt())
-                    .useYn(project.getUseYn())
                     .memberList(memResDtoList)
                     .statusNm(code.getCodeName())
                     .build();
@@ -93,7 +92,6 @@ public class ProjectService {
                 .progress(pjtReqDto.getProgress())
                 .content(pjtReqDto.getContent())
                 .regDt(new Date())
-                .useYn("Y")
                 .build();
 
         // 신규 프로젝트 생성
@@ -147,12 +145,15 @@ public class ProjectService {
                     .content(project.getContent())
                     .regDt(project.getRegDt())
                     .modDt(project.getModDt())
-                    .useYn(project.getUseYn())
                     .memberList(memResDtoList)
                     .statusNm(code.getCodeName())
                     .build();
         }
 
         return pjtResDto;
+    }
+
+    public void deleteById(String pjtId) {
+        projectRepository.deleteById(pjtId);
     }
 }

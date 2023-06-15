@@ -24,7 +24,6 @@ public class ProjectResponseDTO {
     private String content;
     private Date regDt;
     private Date modDt;
-    private String useYn;
 
     // Member
     private List<MemberResponseDTO> memberList;

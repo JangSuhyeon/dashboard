@@ -75,4 +75,14 @@ public class ProjectController {
         return "page/project/detail";
     }
 
+    // 프로젝트 삭제
+    @ResponseBody
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteProject(@RequestParam("pjtId")String pjtId){
+
+        projectService.deleteById(pjtId);
+
+        return ResponseEntity.status(HttpStatus.OK).body("삭제성공");
+    }
+
 }
