@@ -11,12 +11,14 @@ import com.dashboard.project.domain.Project;
 import com.dashboard.project.domain.dto.ProjectRequestDTO;
 import com.dashboard.project.domain.dto.ProjectResponseDTO;
 import com.dashboard.project.repository.ProjectRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -155,5 +157,19 @@ public class ProjectService {
 
     public void deleteById(String pjtId) {
         projectRepository.deleteById(pjtId);
+    }
+
+    @Transactional
+    public void update(ProjectRequestDTO pjtReqDto) {
+
+        Project project = projectRepository.findById(pjtReqDto.getPjtId()).orElse(null);
+        if(pjtReqDto.getPjtNm() != null) project.setPjtNm(pjtReqDto.getPjtNm());
+        if(pjtReqDto.getStartDt() != null) project.setStartDt(pjtReqDto.getStartDt());
+        if(pjtReqDto.getEndDt() != null) project.setEndDt(pjtReqDto.getEndDt());
+        if(pjtReqDto.getStatus() != null) project.setStatus(pjtReqDto.getStatus());
+        if(pjtReqDto.getProgress() == 0) project.setProgress(pjtReqDto.getProgress());
+        if(pjtReqDto.getContent() != null) project.setContent(pjtReqDto.getContent());
+        project.setModDt(new Date());
+
     }
 }

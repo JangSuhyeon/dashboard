@@ -47,3 +47,7 @@ li{
     width: 2.3rem;
     border-radius: 50%!important;
 }
+
+input[type='text']:focus{
+    outline: none;
+}

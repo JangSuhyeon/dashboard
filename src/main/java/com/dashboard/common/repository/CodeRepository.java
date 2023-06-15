@@ -13,7 +13,7 @@ public interface CodeRepository extends JpaRepository<Code, String> {
 
     Code findCodeNameByGroupCodeAndCode(String groupCode, String code);
 
-    List<Code> findAllByGroupCode(String status);
+    List<Code> findAllByGroupCode(String groupCode);
 
     @Query(value = "SELECT generate_project_id(:str)", nativeQuery = true)
     String callGenerateProjectIdFunction(@Param("str") String str);

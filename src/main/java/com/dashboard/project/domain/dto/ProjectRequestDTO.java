@@ -11,6 +11,7 @@ import java.util.List;
 public class ProjectRequestDTO {
 
     // project
+    private String pjtId;
     private String pjtNm;
     private Date startDt;
     private Date endDt;

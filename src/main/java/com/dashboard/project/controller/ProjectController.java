@@ -1,14 +1,13 @@
 package com.dashboard.project.controller;
 
 import com.dashboard.common.domain.dto.CodeResponseDTO;
-import com.dashboard.common.service.CodeService;
+import com.dashboard.common.service.CommonService;
 import com.dashboard.member.service.MemberService;
 import com.dashboard.member.domain.dto.MemberResponseDTO;
 import com.dashboard.project.domain.dto.ProjectRequestDTO;
 import com.dashboard.project.domain.dto.ProjectResponseDTO;
 import com.dashboard.project.service.ProjectService;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,7 +21,7 @@ import java.util.List;
 @RequestMapping("/project")
 public class ProjectController {
 
-    private final CodeService codeService;
+    private final CommonService commonService;
 
     private final ProjectService projectService;
 
@@ -33,7 +32,7 @@ public class ProjectController {
     public String goToProjectCreate(Model model){
 
         // 상태값 목록 조회
-        List<CodeResponseDTO> cdResDtoList = codeService.findAllByGroupCode("STATUS");
+        List<CodeResponseDTO> cdResDtoList = commonService.findAllByGroupCode("STATUS");
 
         // 멤버 목록 조회
         List<MemberResponseDTO> memResDtoList = memberService.findAll();
@@ -68,8 +67,6 @@ public class ProjectController {
         // 프로젝트 상세 정보 조회
         ProjectResponseDTO pjtResDto = projectService.findById(pjtId);
 
-        // 없을 경우에 예외발생 문구 전송?
-
         model.addAttribute("project", pjtResDto);
 
         return "page/project/detail";
@@ -83,6 +80,16 @@ public class ProjectController {
         projectService.deleteById(pjtId);
 
         return ResponseEntity.status(HttpStatus.OK).body("삭제성공");
+    }
+
+    // 프로젝트 변경
+    @ResponseBody
+    @PutMapping("/update")
+    public ResponseEntity<String> updatePorject(@RequestBody ProjectRequestDTO pjtReqDto){
+
+        projectService.update(pjtReqDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body("변경성공");
     }
 
 }

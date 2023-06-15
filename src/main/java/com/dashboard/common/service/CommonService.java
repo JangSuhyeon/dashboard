@@ -11,14 +11,14 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
-public class CodeService {
+public class CommonService {
 
     private final CodeRepository codeRepository;
 
-    public List<CodeResponseDTO> findAllByGroupCode(String status) {
+    public List<CodeResponseDTO> findAllByGroupCode(String groupCode) {
         List<CodeResponseDTO> cdResDtoList = new ArrayList<>();
 
-        List<Code> codeList = codeRepository.findAllByGroupCode(status);
+        List<Code> codeList = codeRepository.findAllByGroupCode(groupCode);
         for (Code code : codeList) {
             CodeResponseDTO cdResDto = code.toDto();
             cdResDtoList.add(cdResDto);
