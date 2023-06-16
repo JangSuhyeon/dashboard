@@ -35,6 +35,10 @@
             border:none;
             width:100%;
         }
+        input#progress{
+            border:none;
+            width:60px;
+        }
     </style>
 </th:block>
 
@@ -58,7 +62,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label>멤버</label>
-                                    <ul>
+                                    <ul id="member" onclick="convertToSelect2('member')">
                                         <li th:each="member : ${project.memberList}" style="display: inline-block">
                                             <img class="avatar-xs" th:src="@{/profile/__${member.memImg}__}" th:title="${member.memNm}">
                                             <p style="display: inline-block; margin-right:8px;"><strong th:text="${member.memNm}"></strong></p>
@@ -79,10 +83,10 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label>상태</label>
-                                    <p><strong th:text="${project.statusNm}"></strong></p>
+                                    <p id="status" onclick="convertToSelect('status')"><strong th:text="${project.statusNm}"></strong></p>
                                 </div>
                                 <div class="form-group col-md-6 align-middle">
-                                    <p class="mb-0">진행도<span class="float-right"><strong th:text="${project.progress}"></strong>%</span></p>
+                                    <p class="mb-0">진행도<span class="float-right"><strong id="progress" onclick="convertToNumber('progress')" th:text="${project.progress}"></strong>%</span></p>
                                     <div class="progress mt-2" style="height: 5px">
                                         <div
                                             class="progress-bar bg-primary"
@@ -125,7 +129,23 @@
 
             $('#pjtModifyBtn').css('display','block');
         }
+        function convertToNumber(id) {
+            var pjtNmElement = document.getElementById(id);
+            var pjtNmValue = pjtNmElement.textContent.trim();
 
+            var inputElement = document.createElement("input");
+            inputElement.setAttribute("type", "number");
+            inputElement.setAttribute("value", pjtNmValue);
+            inputElement.setAttribute("min", 0);
+            inputElement.setAttribute("max", 100);
+            inputElement.setAttribute("step", 5);
+            inputElement.setAttribute("id", id);
+
+            pjtNmElement.parentNode.replaceChild(inputElement, pjtNmElement);
+            inputElement.focus();
+
+            $('#pjtModifyBtn').css('display','block');
+        }
         function convertToDate(id) {
             var pjtNmElement = document.getElementById(id);
             var pjtNmValue = pjtNmElement.textContent.trim();
@@ -141,21 +161,82 @@
 
             $('#pjtModifyBtn').css('display','block');
         }
-        $(document).ready(function() {
+        function convertToSelect(id) {
+            var selectElement = $('#' + id);
+            var selectedText = selectElement.text();
 
-            // 멤버 목록 가져오기
             $.ajax({
                 type: "GET",
                 url:"/code",
-                data:{'groupCode' : 'status'},
+                data:{'groupCode' : id},
                 success:function (res) {
-                    // 리스트 뿌려주기
-                    var
+
+                    var select = $('<select class="form-control">');
+                    for (const code of res) {
+                        select.append($('<option>', {
+                            value: code.code,
+                            text: code.codeName
+                        }));
+
+                        if(code.codeName === selectedText) {
+                            select.val(code.code);
+                        }
+                    }
+
+                    selectElement.replaceWith(select);
                 }
             })
 
-            // 상태 코드 값 가져오기
+        }
+        function convertToSelect2(id) {
+            var originalElement = $('#' + id);
+            var strongElements = originalElement.find('strong');
 
+            $.ajax({
+                type: "GET",
+                url:"/member",
+                success:function (res) {
+                    var select = $('<select class="form-control" id="member">');
+                    for (const member of res) {
+                        select.append($('<option>', {
+                            value: member.memId,
+                            text: member.memNm
+                        }));
+                    }
+
+                    originalElement.replaceWith(select);
+                }
+            })
+
+            // 새로운 #memberList 요소 생성
+            var memberList = $('<div>').attr('id', 'memberList').css('padding', '.375rem .75rem');
+
+            // strong 태그의 텍스트를 기반으로 새로운 리스트 생성
+            strongElements.each(function() {
+                var text = $(this).text().trim();
+                var newDiv = $('<div>').css('padding', '8px')
+                    .css('border-bottom', '1px solid #D5D5D5')
+                    .text(text);
+
+                memberList.append(newDiv);
+            });
+
+            // #memberList 요소를 삽입
+            originalElement.after(memberList);
+        }
+
+        $(document).on('change', '#member', function(event) {
+            console.log('변경');
+            var selectedValue = event.target.value;
+            var selectedText = event.target.options[event.target.selectedIndex].text;
+
+            var html = "<div style='padding:8px; border-bottom: 1px solid #D5D5D5;'>" + selectedText;
+            html += "<input type='hidden' value='" + selectedValue + "'/></div>";
+            console.log(html);
+            $('#memberList').append(html);
+        });
+
+        $(document).ready(function() {
 
             $('#pjtModifyBtn').click(function () {
 
