@@ -11,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.HashMap;
 
 @AllArgsConstructor
 @Controller
@@ -19,7 +22,7 @@ public class MainController {
 
     private final ProjectService projectService;
 
-    @GetMapping(value={"","/login/oauth2/callback/google"})
+    @GetMapping("")
     public String goToDashboard(@PageableDefault(page = 0, size = 10, sort = "regDt", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
         // 프로젝트 목록 조회
@@ -31,6 +34,18 @@ public class MainController {
         model.addAttribute("firstConIdx", pjtResDTOList.getNumber() * pjtResDTOList.getSize() + 1);
 
         return "page/dashboard";
+    }
+
+    @GetMapping("/login/oauth2/callback/google")
+    public String googleRedirect(@RequestParam HashMap<String,Object> response) {
+
+        for (String s : response.keySet()) {
+            System.out.println(s);
+            System.out.println(response.get(s));
+        }
+
+        return "redirect:/";
+
     }
 
 }

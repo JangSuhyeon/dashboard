@@ -1,6 +1,5 @@
 package com.dashboard.user.component;
 
-import com.dashboard.user.domain.dto.JwtToken;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +30,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(secretByteKey);
     }
 
-    public JwtToken generateToken(Authentication authentication){
+    public String generateToken(Authentication authentication){
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -48,11 +47,12 @@ public class JwtTokenProvider {
                 .signWith(key, SignatureAlgorithm.ES256)
                 .compact();
 
-        return JwtToken.builder()
-                .grantType("Bearer")
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
+        return Jwts.builder()
+                .setSubject(authentication.getName())
+                .claim("auth",authorities)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*30))
+                .signWith(key, SignatureAlgorithm.ES256)
+                .compact();
     }
 
     // 토큰 유효성 검사

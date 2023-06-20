@@ -3,9 +3,11 @@ package com.dashboard.user.domain.dto;
 import com.dashboard.user.domain.Users;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.Map;
 
+@ToString
 @Getter
 @Builder
 public class OAuthAttributes {

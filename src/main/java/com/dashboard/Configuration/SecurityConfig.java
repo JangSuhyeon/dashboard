@@ -1,5 +1,9 @@
 package com.dashboard.Configuration;
 
+import com.dashboard.user.component.JwtTokenProvider;
+import com.dashboard.user.component.OAuth2AuthenticationFailureHandler;
+import com.dashboard.user.component.OAuth2AuthenticationSuccessHandler;
+import com.dashboard.user.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.dashboard.user.service.CustomOAuth2UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -9,14 +13,22 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-//    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+
+    @Bean
+    public HttpCookieOAuth2AuthorizationRequestRepository cookieOAuth2AuthorizationRequestRepository(){
+        return new HttpCookieOAuth2AuthorizationRequestRepository();
+    }
 
     @Bean
     public BCryptPasswordEncoder encoder(){
@@ -28,14 +40,28 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
                 .and()
                 .formLogin().disable()
                 .httpBasic().disable()
+
                 .authorizeRequests()
-                .antMatchers("/api/user").permitAll()
+                .antMatchers("/api/**","/login/**","/oauth2/**").permitAll()
                 .and()
-//                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // 유효성 검사
-                .oauth2Login().userInfoEndpoint().userService(customOAuth2UserService);
+
+                .oauth2Login()
+                    .authorizationEndpoint().baseUri("/oauth2/authorization")
+                    .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
+//                .and()
+//                    .redirectionEndpoint()
+//                    .baseUri("/login/oauth2/callback/google") // ??? 에러가 나는 이유는 뭘까?
+                .and()
+                    .userInfoEndpoint().userService(customOAuth2UserService)
+                .and()
+                    .successHandler(oAuth2AuthenticationSuccessHandler)
+                    .failureHandler(oAuth2AuthenticationFailureHandler)
+                .and()
+                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

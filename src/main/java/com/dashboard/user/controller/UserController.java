@@ -1,6 +1,5 @@
 package com.dashboard.user.controller;
 
-import com.dashboard.user.domain.dto.JwtToken;
 import com.dashboard.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +20,8 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/login")
-    public ResponseEntity<JwtToken> loginSuccess(@RequestBody Map<String, String> loginForm){
-        System.out.println("loginForm : " + loginForm);
-        JwtToken token = userService.login(loginForm.get("username"), loginForm.get("password"));
+    public ResponseEntity<String> loginSuccess(@RequestBody Map<String, String> loginForm){
+        String token = userService.login(loginForm.get("username"), loginForm.get("password"));
         return ResponseEntity.ok(token);
     }
 
