@@ -1,11 +1,12 @@
 package com.dashboard.member.domain;
 
 import com.dashboard.member.domain.dto.MemberResponseDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.Getter;
 import org.modelmapper.ModelMapper;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @Getter
 @Entity

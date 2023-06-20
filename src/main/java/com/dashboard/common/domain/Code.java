@@ -1,12 +1,13 @@
 package com.dashboard.common.domain;
 
 import com.dashboard.common.domain.dto.CodeResponseDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.ToString;
 import org.modelmapper.ModelMapper;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 @ToString
 @Getter

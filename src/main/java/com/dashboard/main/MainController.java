@@ -19,7 +19,7 @@ public class MainController {
 
     private final ProjectService projectService;
 
-    @GetMapping("")
+    @GetMapping(value={"","/login/oauth2/callback/google"})
     public String goToDashboard(@PageableDefault(page = 0, size = 10, sort = "regDt", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
         // 프로젝트 목록 조회

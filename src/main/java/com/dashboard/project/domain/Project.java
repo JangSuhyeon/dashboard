@@ -1,12 +1,10 @@
 package com.dashboard.project.domain;
 
-import com.dashboard.project.domain.dto.ProjectResponseDTO;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import lombok.*;
-import org.modelmapper.ModelMapper;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 
 @NoArgsConstructor
