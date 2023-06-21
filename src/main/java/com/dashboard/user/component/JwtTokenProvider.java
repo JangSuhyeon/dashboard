@@ -35,23 +35,11 @@ public class JwtTokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim("auth", authorities)
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30))
-                .signWith(key, SignatureAlgorithm.ES256)
-                .compact();
-
-        String refreshToken = Jwts.builder()
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 36))
-                .signWith(key, SignatureAlgorithm.ES256)
-                .compact();
-
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("auth",authorities)
                 .setExpiration(new Date(System.currentTimeMillis() + 1000*60*30))
-                .signWith(key, SignatureAlgorithm.ES256)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 

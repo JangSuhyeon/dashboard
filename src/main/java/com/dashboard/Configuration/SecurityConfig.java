@@ -5,7 +5,7 @@ import com.dashboard.user.component.OAuth2AuthenticationFailureHandler;
 import com.dashboard.user.component.OAuth2AuthenticationSuccessHandler;
 import com.dashboard.user.repository.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.dashboard.user.service.CustomOAuth2UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -39,6 +39,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
                 .csrf().disable()
+                .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
@@ -52,9 +53,9 @@ public class SecurityConfig {
                 .oauth2Login()
                     .authorizationEndpoint().baseUri("/oauth2/authorization")
                     .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
-//                .and()
-//                    .redirectionEndpoint()
-//                    .baseUri("/login/oauth2/callback/google") // ??? 에러가 나는 이유는 뭘까?
+                .and()
+                    .redirectionEndpoint()
+                    .baseUri("/login/oauth2/code/**")
                 .and()
                     .userInfoEndpoint().userService(customOAuth2UserService)
                 .and()
@@ -62,8 +63,6 @@ public class SecurityConfig {
                     .failureHandler(oAuth2AuthenticationFailureHandler)
                 .and()
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
-
 }

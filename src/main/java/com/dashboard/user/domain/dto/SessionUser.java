@@ -3,14 +3,11 @@ package com.dashboard.user.domain.dto;
 import com.dashboard.user.domain.Users;
 import lombok.Getter;
 
-import java.io.Serializable;
-
 @Getter
-public class SessionUser implements Serializable {
+public class SessionUser {
 
-    private String name;
-    private String email;
-    private String picture;
+    private final String name;
+    private final String email;
 
     public SessionUser(Users user){
         this.name = user.getName();

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 
-import static com.dashboard.user.repository.HttpCookieOAuth2AuthorizationRequestRepository.OAUTH2_AUTHORIZATION_REQEUST_COOKIE_NAME;
+import static com.dashboard.user.repository.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
 
 @RequiredArgsConstructor
 @Component
@@ -32,7 +32,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        Optional<String> redirectUri = CookieUtils.getCookie(request, OAUTH2_AUTHORIZATION_REQEUST_COOKIE_NAME)
+        Optional<String> redirectUri = CookieUtils.getCookie(request, REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
