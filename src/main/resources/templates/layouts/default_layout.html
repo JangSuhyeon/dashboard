@@ -27,4 +27,24 @@
 <!-- footer fragment 사용 -->
 <!--<th:block th:replace="fragments/footer :: footerFragment"></th:block>-->
 </body>
+<script>
+    $(function () {
+        // 토큰 값을 가져와 sessionStorage에 저장하는 함수
+        function saveTokenToSessionStorage() {
+            // 현재 URL에서 "token" 파라미터 값을 추출합니다.
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            // 토큰 값을 sessionStorage에 저장합니다.
+            if (token) {
+                sessionStorage.setItem('token', token);
+                // 쿼리 스트링을 없애고 "/"로 이동합니다.
+                history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        // 페이지 로드 시 토큰을 sessionStorage에 저장합니다.
+        window.onload = saveTokenToSessionStorage;
+    })
+</script>
 </html>

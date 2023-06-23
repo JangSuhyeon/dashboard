@@ -2,7 +2,9 @@ package com.dashboard.user.domain.dto;
 
 import com.dashboard.user.domain.Users;
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString
 @Getter
 public class SessionUser {
 

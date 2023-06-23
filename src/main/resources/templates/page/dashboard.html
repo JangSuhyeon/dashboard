@@ -69,6 +69,7 @@
 <div layout:fragment="content">
   <div class="container">
     <a href="/oauth2/authorization/google">Google Login</a>
+    <p th:if="${user != null}" th:text="${user.name}"></p>
     <div class="row">
       <div class="col-xl-3 col-md-6">
         <div class="card bg-pattern">
