@@ -31,7 +31,6 @@ public class MainController {
         SessionUser user = (SessionUser) session.getAttribute("user");
         if (user != null) {
             model.addAttribute("user",user);
-            System.out.println("user : " + user );
         }
 
         model.addAttribute("projectList", pjtResDTOList);

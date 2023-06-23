@@ -53,6 +53,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .map(entity -> entity.update(attributes.getName()/*, attributes.getProvider()*/))
                 .orElse(attributes.toEntity());
 
+        user.updateLastLoginDate(); // 마지막 로그인 시간 업데이트
+
         return userRepository.save(user);
     }
 }
