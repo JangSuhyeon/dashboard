@@ -17,11 +17,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Tuple;
 import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -47,13 +50,18 @@ public class ProjectService {
             String statusCd = project.getStatus();
 
             // 프로젝트 멤버 조회
-            List<MemberResponseDTO> memResDtoList = new ArrayList<>();
-            List<Member> memList = memberRepository.findAllByPjtId(pjtId);
-            for (Member member : memList) {
-                // Entity -> DTO
-                MemberResponseDTO memResDto = member.toDto();
-                memResDtoList.add(memResDto);
-            }
+            List<Tuple> memTuList = memberRepository.findAllByPjtId(pjtId);
+            List<MemberResponseDTO> memResDtoList = memTuList.stream()
+                    .map(tuple -> {
+                        Member member = tuple.get(0,Member.class);
+                        String leaderYn = tuple.get(1,String.class);
+
+                        MemberResponseDTO memResDto = member.toDto();
+                        memResDto.setLeaderYn(leaderYn);
+
+                        return memResDto;
+                    })
+                    .collect(Collectors.toList());
 
             // 코드 상태값 조회
             Code code = codeRepository.findCodeNameByGroupCodeAndCode("STATUS", statusCd);
@@ -98,17 +106,18 @@ public class ProjectService {
         // 신규 프로젝트 생성
         projectRepository.save(project);
 
+        String leaderMemId = pjtReqDto.getLeaderMemId();
         List<String> memIdList = pjtReqDto.getMemIdList();
         for (String memId : memIdList) {
 
             // pjtMemId 시퀀스 생성
             String pjtMemId = codeRepository.callGenerateProjectIdFunction("PJM");
-
             ProjectMember projectMember = ProjectMember.builder()
                     .pjtMemId(pjtMemId)
                     .pjtId(pjtId)
                     .memId(memId)
-                    .leaderYn("N")
+                    .leaderYn(leaderMemId.equals(memId) ? "Y" : "N")
+                    .regDt(new Date())
                     .build();
 
             // Project <-> Member 생성
@@ -124,12 +133,18 @@ public class ProjectService {
 
         if (project != null){
             // 프로젝트 멤버 조회
-            List<Member> memList = memberRepository.findAllByPjtId(pjtId);
-            for (Member member : memList) {
-                // Entity -> DTO
-                MemberResponseDTO memResDto = member.toDto();
-                memResDtoList.add(memResDto);
-            }
+            List<Tuple> memTupList = memberRepository.findAllByPjtId(pjtId);
+            memResDtoList = memTupList.stream()
+                    .map(tuple -> {
+                        Member member = tuple.get(0,Member.class);
+                        String leaderYn = tuple.get(1,String.class);
+
+                        MemberResponseDTO memResDto = member.toDto();
+                        memResDto.setLeaderYn(leaderYn);
+
+                        return memResDto;
+                    })
+                    .collect(Collectors.toList());
 
             // 코드 상태값 조회
             Code code = codeRepository.findCodeNameByGroupCodeAndCode("STATUS", project.getStatus());

@@ -38,6 +38,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
+                .headers().frameOptions().sameOrigin() /*iframe을 사용하기 위함*/
+
+                .and()
                 .csrf().disable()
                 .cors().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

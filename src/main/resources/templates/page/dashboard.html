@@ -154,12 +154,19 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="project, pjtStat : ${projectList}"
+
+                <!--프로젝트가 없을 경우-->
+                <tr th:if="${projectList.isEmpty()}" style="cursor: pointer; text-align: center" onmouseover="this.style.backgroundColor='#f5f5f5';" onmouseout="this.style.backgroundColor='#fff';">
+                  <td colspan="8">데이터가 없습니다.</td>
+                </tr>
+
+                <!--프로젝트가 있을 경우-->
+                <tr th:unless="${projectList.isEmpty()}" th:each="project, pjtStat : ${projectList}"
                     th:data-pjtId="${project.pjtId}"
                     style="cursor: pointer"
                     onmouseover="this.style.backgroundColor='#f5f5f5';"
                     onmouseout="this.style.backgroundColor='#fff';">
-                  <input type="hidden" id="pjtId" th:value="${project.pjtId}">
+
                   <td th:text="${pjtStat.index + firstConIdx}" class="text-center align-middle"></td>
                   <td th:text="${project.pjtNm}" id="pjtNm" class="align-middle"></td>
                   <td th:text="${project.startDt}" class="align-middle"></td>
@@ -239,13 +246,13 @@
 
             <div class="pt-3">
               <ul class="pagination justify-content-end mb-0">
-                <li th:class="${currentPage eq 1} ? 'page-item disabled' : 'page-item'">
+                <li th:class="${currentPage eq 1 || totalPages <= 0} ? 'page-item disabled' : 'page-item'">
                   <a class="page-link" th:attr="aria-disabled=${currentPage eq 1} ? 'true' : null" th:href="@{/?page=__${(currentPage - 2)}__}">Previous</a>
                 </li>
-                <li th:each="page : ${#numbers.sequence(1, totalPages)}" th:class="${page eq currentPage} ? 'page-item active' : 'page-item'">
+                <li th:if="${totalPages > 0}" th:each="page : ${#numbers.sequence(1, totalPages)}" th:class="${page eq currentPage} ? 'page-item active' : 'page-item'">
                   <a class="page-link" th:href="@{/?page=__${(page - 1)}__}" th:text="${page}"></a>
                 </li>
-                <li th:class="${currentPage eq totalPages} ? 'page-item disabled' : 'page-item'">
+                <li th:class="${currentPage eq totalPages || totalPages <= 0} ? 'page-item disabled' : 'page-item'">
                   <a class="page-link" th:attr="aria-disabled=${currentPage eq totalPages} ? 'true' : null" th:href="@{/?page=__${(currentPage)}__}">Next</a>
                 </li>
               </ul>

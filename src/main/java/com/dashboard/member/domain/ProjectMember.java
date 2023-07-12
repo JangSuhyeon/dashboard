@@ -3,10 +3,12 @@ package com.dashboard.member.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,5 +27,8 @@ public class ProjectMember {
 
     @Column
     private String leaderYn;
+
+    @Column
+    private Date regDt;
 
 }

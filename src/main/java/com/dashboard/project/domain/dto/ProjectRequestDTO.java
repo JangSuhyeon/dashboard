@@ -20,6 +20,7 @@ public class ProjectRequestDTO {
     private String content;
 
     // member
+    String leaderMemId;
     List<String> memIdList;
 
 }

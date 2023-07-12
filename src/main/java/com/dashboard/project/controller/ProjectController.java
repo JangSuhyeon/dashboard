@@ -66,7 +66,6 @@ public class ProjectController {
 
         // 프로젝트 상세 정보 조회
         ProjectResponseDTO pjtResDto = projectService.findById(pjtId);
-
         model.addAttribute("project", pjtResDto);
 
         return "page/project/detail";
